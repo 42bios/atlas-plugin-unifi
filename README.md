@@ -26,8 +26,12 @@ Use a dedicated local read-only account with access to the selected site. TLS ve
 
 ## Status and development
 
-Initial version 0.1.0. Fixture/transport tests and Atlas schema validation are required before publication. **A live UniFi controller test remains pending.** No controller credentials are included here.
+Initial version 0.1.0. Ten package, collector and transport tests pass. Atlas schema validation and a complete GitHub-to-worker import were verified with separate UniFi OS and classic HTTPS fixtures, including session cookies, CSRF and trusted test certificates. **A live UniFi controller test remains pending.** No controller credentials are included here.
 
 Run `python -m unittest discover -s tests`. After changing declared files, run `python tools/update_manifest.py` and increment the version for a release. Installed repository code runs with Atlas user permissions; checksums establish integrity, not trust or sandboxing.
 
 Authentication compatibility follows [the source integration API](https://github.com/42bios/unifi-network-plus/blob/main/custom_components/unifi_network_plus/api.py). Network configuration fields follow [aiounifi’s network model](https://github.com/Kane610/aiounifi/blob/master/aiounifi/models/network.py). Attribution is preserved in THIRD_PARTY_NOTICES.md.
+
+Avoid parallel connector instances importing the same devices and IPs. Atlas rejects duplicate address assignments; existing manual inventory may need reconciliation before the first live import.
+
+Source integration reviewed at commit `29c33821b3680a4748701ac1c6f3f90ee9a19467`. Its control commands and monitoring entities were not included.
