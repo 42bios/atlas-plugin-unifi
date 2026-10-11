@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "connectorApi": 1,
+  "id": "unifi-connector",
+  "name": "UniFi connector",
+  "description": "Read-only devices, switch ports, networks, known clients and WLAN associations, based on UniFi Network+.",
+  "version": "0.1.0",
+  "runtime": "python",
+  "entrypoint": "connector.py",
+  "credentialRequired": true,
+  "configuration": [
+    {
+      "key": "upstreamUrl",
+      "label": "UniFi HTTPS controller URL",
+      "type": "url",
+      "required": true
+    },
+    {
+      "key": "site",
+      "label": "Site slug",
+      "type": "text",
+      "default": "default"
+    },
+    {
+      "key": "controllerType",
+      "label": "Controller type: os or classic",
+      "type": "text",
+      "default": "os"
+    }
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "93b21dab4e1b411c7c7da98b4380770ea49a2c6a1a8c316ea7694f1c30a2d241"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "2e52735dba3fc4e3a753b80ce8e37cd6ecaf9717fb8184c258b0e8d9fdf3f56d"
+    },
+    {
+      "path": "connector.py",
+      "sha256": "e8234bf989f518ff1a23bf2d37261d70757c2679f17c8977e59fa4b90c1a809a"
+    },
+    {
+      "path": "common/runtime.py",
+      "sha256": "00ddc5770986e5417c4c028d976b05372b353cf1f74410468f0479ee44023ec2"
+    },
+    {
+      "path": "worker/api.py",
+      "sha256": "f8ce10a16d150e98c63a62b6e0a3c4196a6dd358a53cf8ff4f0c11e20e684e59"
+    },
+    {
+      "path": "worker/collector.py",
+      "sha256": "974c3537d50b1aaeb139bfd58b9ebd6ede400e560d1a3debf395f531185d2f4c"
+    }
+  ]
+}
