@@ -1,18 +1,39 @@
 """Session and CSRF approach adapted from 42bios/unifi-network-plus (MIT).
 See THIRD_PARTY_NOTICES.md for the original copyright and license.
 """
-import base64,http.cookiejar,json,ssl,urllib.request,urllib.error
+import base64,http.cookiejar,http.client,hashlib,hmac,json,re,ssl,urllib.request,urllib.error
 from urllib.parse import urlsplit,quote
 from common.runtime import NoRedirect
 
+class PinnedConnection(http.client.HTTPSConnection):
+ def __init__(self,*args,fingerprint,**kwargs):
+  self.fingerprint=fingerprint
+  context=ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT);context.check_hostname=False;context.verify_mode=ssl.CERT_NONE
+  kwargs['context']=context
+  super().__init__(*args,**kwargs)
+ def connect(self):
+  super().connect()
+  actual=hashlib.sha256(self.sock.getpeercert(binary_form=True)).hexdigest()
+  if not hmac.compare_digest(actual,self.fingerprint):
+   self.close();raise ssl.SSLError('UniFi certificate fingerprint mismatch')
+
+class PinnedHandler(urllib.request.HTTPSHandler):
+ def __init__(self,fingerprint):super().__init__();self.fingerprint=fingerprint
+ def https_open(self,req):
+  return self.do_open(lambda *a,**kw:PinnedConnection(*a,fingerprint=self.fingerprint,**kw),req)
+
 class Client:
- def __init__(self,url,username,password,site='default',mode='os',ca=None):
+ def __init__(self,url,username,password,site='default',mode='os',ca=None,fingerprint=None):
   target=urlsplit(url)
   if target.scheme!='https' or not target.hostname or target.username or target.password or target.path not in ('','/') or target.query or target.fragment:raise ValueError('Use an HTTPS controller origin URL')
   if mode not in ('os','classic'):raise ValueError('Controller type must be os or classic')
   self.url=url.rstrip('/');self.username=username;self.password=password;self.site=quote(site,safe='');self.mode=mode;self.csrf=''
   self.cookies=http.cookiejar.CookieJar()
-  self.opener=urllib.request.build_opener(NoRedirect(),urllib.request.HTTPCookieProcessor(self.cookies),urllib.request.HTTPSHandler(context=ssl.create_default_context(cafile=ca)))
+  if fingerprint:
+   fingerprint=fingerprint.replace(':','').lower()
+   if not re.fullmatch(r'[a-f0-9]{64}',fingerprint):raise ValueError('Certificate fingerprint must contain 64 hexadecimal characters')
+  transport=PinnedHandler(fingerprint) if fingerprint else urllib.request.HTTPSHandler(context=ssl.create_default_context(cafile=ca))
+  self.opener=urllib.request.build_opener(NoRedirect(),urllib.request.HTTPCookieProcessor(self.cookies),transport)
  def _request(self,path,body=None):
   headers={'Accept':'application/json'}
   if self.csrf:headers['X-CSRF-Token']=self.csrf

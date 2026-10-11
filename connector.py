@@ -10,7 +10,7 @@ ca=None
 if credentials.get('ca'):
  path=Path(os.environ['ADDIN_CONFIG_FILE']).parent/'unifi_ca';path.write_text(credentials['ca']);path.chmod(0o600);ca=str(path)
 def snapshot(source):
- client=Client(config['upstreamUrl'],credentials['username'],credentials['password'],config.get('site','default'),config.get('controllerType','os'),ca)
+ client=Client(config['upstreamUrl'],credentials['username'],credentials['password'],config.get('site','default'),config.get('controllerType','os'),ca,config.get('tlsFingerprint'))
  client.login()
  return collect(client.get,source,config.get('site','default'))
 run('unifi',snapshot)

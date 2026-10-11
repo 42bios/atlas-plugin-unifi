@@ -22,11 +22,11 @@ Enter private credential JSON:
 {"username":"LOCAL_READ_ONLY_USER","password":"YOUR_PASSWORD","ca":"OPTIONAL_PRIVATE_CA_PEM"}
 ```
 
-Use a dedicated local read-only account with access to the selected site. TLS verification remains enabled; supply the trusted private CA when necessary. Cloud SSO/MFA authentication and API-key-based official integration endpoints are not implemented in this initial version. The only POST is session login; inventory endpoints use GET. Session expiry triggers one login retry.
+Use a dedicated local read-only account with access to the selected site. TLS verification remains enabled. Supply a trusted private CA when the certificate includes the controller hostname, or explicitly configure its SHA-256 certificate fingerprint. Pinning compares the live server certificate before any login credentials or cookies are sent; a mismatch aborts the request. Verify the fingerprint through a trusted channel before saving it. Certificate replacement requires updating the pin. Cloud SSO/MFA authentication and API-key-based official integration endpoints are not implemented in this initial version. The only POST is session login; inventory endpoints use GET. Session expiry triggers one login retry.
 
 ## Status and development
 
-Initial version 0.1.0. Ten package, collector and transport tests pass. Atlas schema validation and a complete GitHub-to-worker import were verified with separate UniFi OS and classic HTTPS fixtures, including session cookies, CSRF and trusted test certificates. **A live UniFi controller test remains pending.** No controller credentials are included here.
+Initial version 0.1.1. Ten package, collector and transport tests pass. Atlas schema validation and a complete GitHub-to-worker import were verified with separate UniFi OS and classic HTTPS fixtures, including session cookies, CSRF and trusted test certificates. **A live UniFi controller test remains pending.** No controller credentials are included here.
 
 Run `python -m unittest discover -s tests`. After changing declared files, run `python tools/update_manifest.py` and increment the version for a release. Installed repository code runs with Atlas user permissions; checksums establish integrity, not trust or sandboxing.
 

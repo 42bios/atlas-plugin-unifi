@@ -4,7 +4,7 @@
   "id": "unifi-connector",
   "name": "UniFi connector",
   "description": "Read-only devices, switch ports, networks, known clients and WLAN associations, based on UniFi Network+.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "runtime": "python",
   "entrypoint": "connector.py",
   "credentialRequired": true,
@@ -26,12 +26,17 @@
       "label": "Controller type: os or classic",
       "type": "text",
       "default": "os"
+    },
+    {
+      "key": "tlsFingerprint",
+      "label": "Trusted certificate SHA-256 fingerprint (optional)",
+      "type": "text"
     }
   ],
   "files": [
     {
       "path": "README.md",
-      "sha256": "de3ec042a8b38e4d0b74ef5735bef636ccec8fb9f5487954f9631e7b9cec6d07"
+      "sha256": "e05dbd1ba0e0d9e28d6ce48ca73c9ed8520d36a63022920be3f264333d3f38ed"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -39,7 +44,7 @@
     },
     {
       "path": "connector.py",
-      "sha256": "e8234bf989f518ff1a23bf2d37261d70757c2679f17c8977e59fa4b90c1a809a"
+      "sha256": "cd52b4a0cd058be9d3ff2f28180958a3a6a0b97b445d669856cfbd8d3869f7fd"
     },
     {
       "path": "common/runtime.py",
@@ -47,7 +52,7 @@
     },
     {
       "path": "worker/api.py",
-      "sha256": "f8ce10a16d150e98c63a62b6e0a3c4196a6dd358a53cf8ff4f0c11e20e684e59"
+      "sha256": "64457ab565658a27e78072fff732df7450f17a7b1f6daf5becf55df6ed1d2343"
     },
     {
       "path": "worker/collector.py",

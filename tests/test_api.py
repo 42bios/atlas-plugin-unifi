@@ -40,3 +40,22 @@ class ApiTests(unittest.TestCase):
   def login(*args):client.cookies.set_cookie(cookie);return {}
   with patch.object(client,'_request',side_effect=login):client.login()
   self.assertEqual(client.csrf,'fallback')
+
+class PinTests(unittest.TestCase):
+ def test_wrong_pin_closes_before_sending_credentials(self):
+  from api import PinnedConnection
+  import hashlib,http.client
+  from unittest.mock import MagicMock
+  conn=PinnedConnection('unifi.example',fingerprint='a'*64);sock=MagicMock();sock.getpeercert.return_value=b'wrong-certificate';conn.sock=sock
+  with patch.object(http.client.HTTPSConnection,'connect'),patch.object(conn,'close') as close:
+   with self.assertRaises(Exception):conn.connect()
+   close.assert_called_once();sock.sendall.assert_not_called()
+ def test_matching_certificate_pin(self):
+  from api import PinnedConnection
+  import hashlib,http.client
+  from unittest.mock import MagicMock
+  cert=b'test-certificate';conn=PinnedConnection('unifi.example',fingerprint=hashlib.sha256(cert).hexdigest());conn.sock=MagicMock();conn.sock.getpeercert.return_value=cert
+  with patch.object(http.client.HTTPSConnection,'connect'),patch.object(conn,'close') as close:
+   conn.connect();close.assert_not_called()
+ def test_malformed_pin_rejected(self):
+  with self.assertRaises(ValueError):Client('https://unifi.example','user','secret',fingerprint='not-a-pin')
