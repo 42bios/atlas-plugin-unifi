@@ -4,7 +4,7 @@
   "id": "unifi-connector",
   "name": "UniFi connector",
   "description": "Read-only devices, switch ports, networks, known clients and WLAN associations, based on UniFi Network+.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "runtime": "python",
   "entrypoint": "connector.py",
   "credentialRequired": true,
@@ -36,7 +36,7 @@
   "files": [
     {
       "path": "README.md",
-      "sha256": "e05dbd1ba0e0d9e28d6ce48ca73c9ed8520d36a63022920be3f264333d3f38ed"
+      "sha256": "e83e51a6eedd04c97de173567bc8e2c0c3a66a1506f6137ba4a623683a8a5358"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",

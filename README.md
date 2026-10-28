@@ -14,7 +14,15 @@ Configured facts are imported snapshots, not continuous monitoring. Fiber socket
 
 ## Install
 
-In Atlas open **Sources & settings → Add-ins → Add GitHub repository** and enter `https://github.com/42bios/atlas-plugin-unifi`. Review the commit and confirm trust. Create a manual connector instance, choose HTTPS controller origin, site slug and controller type (`os` for UniFi OS, `classic` for a standalone Network controller). Automatic controller-type detection is intentionally avoided.
+1. Open **Marketplace**, search for this connector and open its repository README.
+2. Choose **Download & review**. Atlas resolves the catalog's pinned commit and verifies the declared package files before installation.
+3. Review the package and its access requirements, type `42bios/atlas-plugin-unifi` to confirm trust, then install it.
+4. Choose **Configure connector**. An existing system opens for editing; multiple systems produce a chooser. Create a new instance only for a different upstream system.
+5. Start with **Manual imports**, enter the controller URL / discovery targets and private credential, then save.
+6. Open **Sources & settings → Connected systems** and select **Test & import**. Review the imported objects before enabling a schedule.
+
+For a private or unlisted connector, use **Sources & settings → Developer tools → Add GitHub repository**. Installing a package does not authenticate to an upstream service or start an import. Each configured system has its own stable source ID and credential. Updates retain those IDs and credentials; do not create a second collector for the same system.
+
 
 Enter private credential JSON:
 
@@ -26,12 +34,18 @@ Use a dedicated local read-only account with access to the selected site. TLS ve
 
 ## Status and development
 
-Initial version 0.1.1. Ten package, collector and transport tests pass. Atlas schema validation and a complete GitHub-to-worker import were verified with separate UniFi OS and classic HTTPS fixtures, including session cookies, CSRF and trusted test certificates. **A live UniFi controller test remains pending.** No controller credentials are included here.
+Collector and transport fixture tests cover the supported response patterns. Atlas schema validation and a complete GitHub-to-worker import were verified with separate UniFi OS and classic HTTPS fixtures, including session cookies, CSRF and trusted test certificates. **A live UniFi controller test remains pending.** No controller credentials are included here.
 
-Run `python -m unittest discover -s tests`. After changing declared files, run `python tools/update_manifest.py` and increment the version for a release. Installed repository code runs with Atlas user permissions; checksums establish integrity, not trust or sandboxing.
+Run `python -m unittest discover -s tests`. After changing declared files, run `python tools/update_manifest.py` and increment the version for a release. Atlas executes each import in a separate worker container. It receives this instance’s configuration and credential and a source-scoped import token. The worker has outbound network access, but no Atlas database, other instances’ credentials or Docker socket mount. Use reviewed code and read-only upstream credentials. File checksums identify the downloaded content; they do not certify its author.
 
 Authentication compatibility follows [the source integration API](https://github.com/42bios/unifi-network-plus/blob/main/custom_components/unifi_network_plus/api.py). Network configuration fields follow [aiounifi’s network model](https://github.com/Kane610/aiounifi/blob/master/aiounifi/models/network.py). Attribution is preserved in THIRD_PARTY_NOTICES.md.
 
 Avoid parallel connector instances importing the same devices and IPs. Atlas rejects duplicate address assignments; existing manual inventory may need reconciliation before the first live import.
 
 Source integration reviewed at commit `29c33821b3680a4748701ac1c6f3f90ee9a19467`. Its control commands and monitoring entities were not included.
+
+## Validation and upgrade notes
+
+UniFi OS and classic-controller authentication flows are fixture validated. A live controller connection has not been configured in the current Atlas environment.
+
+This documentation release changes setup instructions and runtime descriptions. Collector behavior is unchanged. Review Marketplace updates explicitly; applying an update does not require re-entering saved credentials. Keep credentials out of repositories, issues and screenshots.
