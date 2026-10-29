@@ -49,3 +49,7 @@ Source integration reviewed at commit `29c33821b3680a4748701ac1c6f3f90ee9a19467`
 UniFi OS and classic-controller authentication flows are fixture validated. A live controller connection has not been configured in the current Atlas environment.
 
 This documentation release changes setup instructions and runtime descriptions. Collector behavior is unchanged. Review Marketplace updates explicitly; applying an update does not require re-entering saved credentials. Keep credentials out of repositories, issues and screenshots.
+
+## License
+
+Copyright © 2026 42bios. Licensed under **GPL-3.0-only**. See [LICENSE.txt](LICENSE.txt). This applies to this connector’s code and documentation; upstream products and trademarks retain their own rights.
